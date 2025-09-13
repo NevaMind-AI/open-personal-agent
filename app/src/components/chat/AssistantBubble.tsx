@@ -1,28 +1,66 @@
+import type { ContentBlockParam, TextBlockParam, ToolResultBlockParam, ToolUseBlockParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import type { AssistantItem } from '../../api/client';
 
-export function AssistantBubble(props: { content: AssistantItem[] }) {
+export function AssistantBubble(props: { content: Array<ContentBlockParam> }) {
   const { content } = props;
+
+  function renderTextBlock(block: TextBlockParam, idx: number): React.ReactNode {
+    return (
+      <div key={idx} className="w-full text-slate-900 leading-relaxed prose prose-slate max-w-none">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.text}</ReactMarkdown>
+      </div>
+    );
+  }
+
+  function prettyMaybeJson(raw: unknown): string {
+    if (typeof raw !== 'string') {
+      try { return JSON.stringify(raw, null, 2); } catch { return String(raw); }
+    }
+    try {
+      return JSON.stringify(JSON.parse(raw), null, 2);
+    } catch {
+      return raw; // 流式未完成时直接显示原文，避免抛错
+    }
+  }
+
+  function renderToolUseBlock(block: ToolUseBlockParam, idx: number): React.ReactNode {
+    return (
+      <div key={idx} className="w-full rounded-xl border border-slate-200 p-3 bg-slate-50">
+        <div className="text-xs text-slate-500 mb-1">tool: {block.name}</div>
+        <pre className="text-xs whitespace-pre-wrap break-words">input: {prettyMaybeJson(block.input as string)}</pre>
+      </div>
+    );
+  }
+
+  function renderToolResultBlock(block: ToolResultBlockParam, idx: number): React.ReactNode {
+    let content: { tool_use_id: string; name: string; input: unknown; output: unknown } | null = null;
+    try {
+      content = JSON.parse(block.content as string);
+    } catch {
+      // 未完成时容错，直接渲染原始字符串
+    }
+    return (
+      <div key={idx} className="w-full rounded-xl border border-slate-200 p-3 bg-slate-50">
+        <div className="text-xs text-slate-500 mb-1">tool: {content ? content.name : 'result'}</div>
+        <pre className="text-xs whitespace-pre-wrap break-words">{content ? `result: ${prettyMaybeJson(content.output)}` : String(block.content)}</pre>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-col gap-2">
       {content.map((item, idx) => {
-        if (item.type === 'text') {
-          return (
-            <div key={idx} className="w-full text-slate-900 leading-relaxed prose prose-slate max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.text}</ReactMarkdown>
-            </div>
-          );
+        switch (item.type) {
+          case 'text':
+            return renderTextBlock(item, idx);
+          case 'tool_use':
+            return renderToolUseBlock(item, idx);
+          case 'tool_result':
+            return renderToolResultBlock(item, idx);
+          default:
+            return null;
         }
-        return (
-          <div key={idx} className="w-full rounded-xl border border-slate-200 p-3 bg-slate-50">
-            <div className="text-xs text-slate-500 mb-1">tool: {item.name}</div>
-            <pre className="text-xs whitespace-pre-wrap break-words">input: {JSON.stringify(item.input, null, 2)}</pre>
-            {item.output !== undefined && (
-              <pre className="text-xs whitespace-pre-wrap break-words mt-2">result: {JSON.stringify(item.output, null, 2)}</pre>
-            )}
-          </div>
-        );
       })}
     </div>
   );

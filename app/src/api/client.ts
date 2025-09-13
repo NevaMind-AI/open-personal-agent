@@ -1,3 +1,5 @@
+import type { ContentBlockParam, InputJSONDelta, MessageParam, RawContentBlockDelta, RawContentBlockDeltaEvent, RawContentBlockStartEvent, TextBlockParam, TextDelta, ToolResultBlockParam, ToolUseBlockParam } from '@anthropic-ai/sdk/resources/messages';
+
 export interface HealthResponse {
   status: string
   time: string
@@ -15,23 +17,6 @@ export async function getHealth(): Promise<HealthResponse> {
   return res.json();
 }
 
-export type AssistantItem =
-  | { type: 'text'; text: string }
-  | { type: 'tool_use'; id: string; name: string; input: unknown; output?: unknown }
-
-export type ChatMessage =
-  | { role: 'user'; content: string }
-  | { role: 'assistant'; content: AssistantItem[] }
-
-export type AssistantBlock =
-  | { kind: 'text'; text: string }
-  | { kind: 'tool_use'; id: string; name: string; input: unknown; output?: unknown }
-
-export type AssistantStreamEvent =
-  | { type: 'block_start'; block: AssistantBlock }
-  | { type: 'block_delta'; delta: Partial<AssistantBlock> }
-  | { type: 'block_stop' }
-
 export type StreamOptions = {
   model?: string
   system?: string
@@ -40,11 +25,10 @@ export type StreamOptions = {
 }
 
 export async function streamAnthropic(
-  messages: ChatMessage[] | undefined,
+  messages: MessageParam[] | undefined,
   prompt: string | undefined,
-  onText: (chunk: string) => void,
-  onEvent?: (eventName: string, payload: unknown) => void,
-  onAssistantBlock?: (ev: AssistantStreamEvent) => void,
+  onNewBlock: (content: ContentBlockParam) => void,
+  onAppend: (delta: RawContentBlockDelta) => void,
   options?: StreamOptions,
 ): Promise<void> {
   const controller = new AbortController();
@@ -68,29 +52,29 @@ export async function streamAnthropic(
     console.debug('[streamAnthropic] event', name, data);
     try {
       const parsed = data ? JSON.parse(data) : null;
-      if (name === 'text' && parsed && typeof parsed.text === 'string') {
-        // 总是将 text 增量回传给 onText；块级渲染时由页面把它写入最后一个 text item
-        onText(parsed.text);
-      } else if (name === 'content_block_start' && onAssistantBlock) {
-        // cannot know type until backend exposes; we infer from fields when available
-        const block = parsed?.content_block;
-        if (block?.type === 'tool_use') {
-          onAssistantBlock({ type: 'block_start', block: { kind: 'tool_use', id: block.id, name: block.name, input: block.input } });
-        } else if (block?.type === 'text') {
-          onAssistantBlock({ type: 'block_start', block: { kind: 'text', text: '' } });
+      switch (name) {
+        case 'content_block_start': {
+          onNewBlock(parseContentBlockStartEvent(parsed as RawContentBlockStartEvent));
+          break;
         }
-      } else if (name === 'content_block_delta' && onAssistantBlock) {
-        const delta = parsed?.delta;
-        if (delta?.type === 'text_delta' && typeof delta.text === 'string') {
-          onAssistantBlock({ type: 'block_delta', delta: { kind: 'text', text: delta.text } });
+        case 'content_block_delta': {
+          onAppend(parseContentBlockDeltaEvent(parsed as RawContentBlockDeltaEvent));
+          break;
         }
-      } else if (name === 'content_block_stop' && onAssistantBlock) {
-        onAssistantBlock({ type: 'block_stop' });
-      } else if (name === 'tool_result' && onAssistantBlock) {
-        const tr = parsed;
-        onAssistantBlock({ type: 'block_delta', delta: { kind: 'tool_use', id: tr.tool_use_id, name: tr.name, input: tr.input, output: tr.output } });
+        // temporary do nothing
+        case 'content_block_stop': {
+          break;
+        }
+        // this is a custom event type
+        case 'tool_result': {
+          onNewBlock({
+            type: 'tool_result',
+            tool_use_id: parsed.tool_use_id,
+            content: JSON.stringify(parsed),
+          } as ToolResultBlockParam);
+          break;
+        }
       }
-      if (onEvent) onEvent(name, parsed);
     } catch {
       // swallow parse errors
     }
@@ -127,3 +111,32 @@ export async function streamAnthropic(
 }
 
 
+function parseContentBlockStartEvent(parsed: RawContentBlockStartEvent): ContentBlockParam {
+  switch (parsed.content_block.type) {
+    case 'tool_use':
+      return {
+        type: 'tool_use',
+        id: parsed.content_block.id,
+        name: parsed.content_block.name,
+        input: '',
+      } as ToolUseBlockParam;
+      break;
+    case 'text':
+      return {
+        type: 'text',
+        text: '',
+      } as TextBlockParam;
+      break;
+  }
+  throw new Error(`Unknown content block type: ${parsed.content_block.type}`);
+}
+
+function parseContentBlockDeltaEvent(parsed: RawContentBlockDeltaEvent): RawContentBlockDelta {
+  switch (parsed.delta.type) {
+    case 'text_delta':
+      return parsed.delta as TextDelta;
+    case 'input_json_delta':
+      return parsed.delta as InputJSONDelta;
+  }
+  throw new Error(`Unknown content block delta type: ${parsed.delta.type}`);
+}

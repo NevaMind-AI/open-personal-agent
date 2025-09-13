@@ -1,11 +1,11 @@
 import { forwardRef } from 'react';
-import type { ChatMessage } from '../../api/client';
 // import { MessageBubble } from './MessageBubble.tsx'
-import { UserBubble } from './UserBubble.tsx';
+import type { ContentBlockParam, MessageParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import { AssistantBubble } from './AssistantBubble.tsx';
+import { UserBubble } from './UserBubble.tsx';
 
 export const MessageList = forwardRef<HTMLDivElement, {
-  messages: ChatMessage[]
+  messages: MessageParam[]
   loading: boolean
 }>(function MessageList(props, ref) {
   const { messages, loading } = props;
@@ -22,7 +22,7 @@ export const MessageList = forwardRef<HTMLDivElement, {
                 {m.role === 'user' ? (
                   <UserBubble content={m.content as string} />
                 ) : (
-                  <AssistantBubble content={m.content as any} />
+                  <AssistantBubble content={m.content as Array<ContentBlockParam>} />
                 )}
               </div>
             </div>
@@ -31,7 +31,16 @@ export const MessageList = forwardRef<HTMLDivElement, {
       )}
       {loading && (
         <div className="flex my-2">
-          <div className="max-w-[70%]"><div className="rounded-2xl rounded-bl-sm bg-slate-100 text-slate-900 px-3 py-2 shadow">Generating…</div></div>
+          <div className="w-full">
+            <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-sm bg-slate-100 px-3 py-2 shadow">
+              <span className="sr-only">Generating…</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
