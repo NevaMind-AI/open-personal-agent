@@ -104,17 +104,6 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
               break;
             case 'content_block_delta': {
               res.write(encodeSseEvent('content_block_delta', JSON.stringify(event)));
-              // const e = event as Messages.RawContentBlockDeltaEvent;
-              // if (e.delta?.type === 'text_delta' && typeof (e.delta as TextDelta).text === 'string') {
-              //   const text = (e.delta as TextDelta).text;
-              //   res.write(encodeSseEvent('content_block_delta__tex', JSON.stringify({ text })));
-              // } else if (e.delta?.type === 'input_json_delta') {
-              //   // tool input partial json - no-op
-              //   const json = (e.delta as InputJSONDelta).partial_json;
-              //   res.write(encodeSseEvent('content_block_delta__input_json', JSON.stringify({ json })));
-              // } else {
-              //   res.write(encodeSseEvent('content_block_delta', JSON.stringify(event)));
-              // }
               break;
             }
             case 'content_block_stop': {

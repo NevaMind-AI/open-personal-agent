@@ -12,6 +12,14 @@ export function ChatPage() {
 
   const canSend = useMemo(() => !loading, [loading]);
 
+  const onNewMessages = useCallback((messages: MessageParam[]) => {
+    setMessages((prev) => {
+      const next = [...prev];
+      next.push(...messages);
+      return next;
+    });
+  }, []);
+
   const onNewBlock = useCallback((block: ContentBlockParam) => {
     setMessages((prev) => {
       const next = [...prev];
@@ -29,7 +37,7 @@ export function ChatPage() {
     });
   }, []);
 
-  const appendAssistantDelta = useCallback((delta: RawContentBlockDelta) => {
+  const onAppendAssistantDelta = useCallback((delta: RawContentBlockDelta) => {
     setMessages((prev) => {
       const next = [...prev];
       if (next.length === 0 || next[next.length - 1].role !== 'assistant') {
@@ -65,6 +73,23 @@ export function ChatPage() {
     });
   }, []);
 
+  const onBlockStop = useCallback(() => {
+    setMessages((prev) => {
+      const next = [...prev];
+      if (next.length === 0 || next[next.length - 1].role !== 'assistant') {
+        return next;
+      }
+      const last = next[next.length - 1] as MessageParam;
+      if (Array.isArray(last.content)) {
+        const lastBlock = last.content[last.content.length - 1];
+        if (lastBlock.type === 'tool_use') {
+          lastBlock.input = JSON.parse(lastBlock.input as string);
+        }
+      }
+      return next;
+    });
+  }, []);
+
   const send = useCallback(async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
@@ -74,8 +99,10 @@ export function ChatPage() {
       await streamAnthropic(
         [...messages, { role: 'user', content: trimmed }],
         undefined,
+        onNewMessages,
         onNewBlock,
-        appendAssistantDelta,
+        onAppendAssistantDelta,
+        onBlockStop,
       );
     } catch (e) {
       onNewBlock({
@@ -85,7 +112,7 @@ export function ChatPage() {
     } finally {
       setLoading(false);
     }
-  }, [appendAssistantDelta, onNewBlock, loading, messages]);
+  }, [loading, messages, onNewMessages, onNewBlock, onAppendAssistantDelta, onBlockStop]);
 
   useEffect(() => {
     const el = listRef.current;

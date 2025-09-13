@@ -27,8 +27,10 @@ export type StreamOptions = {
 export async function streamAnthropic(
   messages: MessageParam[] | undefined,
   prompt: string | undefined,
+  onNewMessages: (messages: MessageParam[]) => void,
   onNewBlock: (content: ContentBlockParam) => void,
   onAppend: (delta: RawContentBlockDelta) => void,
+  onBlockStop: () => void,
   options?: StreamOptions,
 ): Promise<void> {
   const controller = new AbortController();
@@ -63,15 +65,23 @@ export async function streamAnthropic(
         }
         // temporary do nothing
         case 'content_block_stop': {
+          onBlockStop();
           break;
         }
-        // this is a custom event type
+        // this is a custom event type, we use it to append tool_result to message
         case 'tool_result': {
-          onNewBlock({
-            type: 'tool_result',
-            tool_use_id: parsed.tool_use_id,
-            content: JSON.stringify(parsed),
-          } as ToolResultBlockParam);
+          onNewMessages([
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'tool_result',
+                  tool_use_id: parsed.tool_use_id,
+                  content: JSON.stringify(parsed),
+                } as ToolResultBlockParam
+              ] as Array<ContentBlockParam>
+            } as MessageParam,
+          ]);
           break;
         }
       }

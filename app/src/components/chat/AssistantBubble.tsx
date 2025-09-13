@@ -1,4 +1,4 @@
-import type { ContentBlockParam, TextBlockParam, ToolResultBlockParam, ToolUseBlockParam } from '@anthropic-ai/sdk/resources/index.mjs';
+import type { ContentBlockParam, TextBlockParam, ToolUseBlockParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -33,31 +33,14 @@ export function AssistantBubble(props: { content: Array<ContentBlockParam> }) {
     );
   }
 
-  function renderToolResultBlock(block: ToolResultBlockParam, idx: number): React.ReactNode {
-    let content: { tool_use_id: string; name: string; input: unknown; output: unknown } | null = null;
-    try {
-      content = JSON.parse(block.content as string);
-    } catch {
-      // 未完成时容错，直接渲染原始字符串
-    }
-    return (
-      <div key={idx} className="w-full rounded-xl border border-slate-200 p-3 bg-slate-50">
-        <div className="text-xs text-slate-500 mb-1">tool: {content ? content.name : 'result'}</div>
-        <pre className="text-xs whitespace-pre-wrap break-words">{content ? `result: ${prettyMaybeJson(content.output)}` : String(block.content)}</pre>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full flex flex-col gap-2">
       {content.map((item, idx) => {
         switch (item.type) {
           case 'text':
-            return renderTextBlock(item, idx);
+            return renderTextBlock(item as TextBlockParam, idx);
           case 'tool_use':
-            return renderToolUseBlock(item, idx);
-          case 'tool_result':
-            return renderToolResultBlock(item, idx);
+            return renderToolUseBlock(item as ToolUseBlockParam, idx);
           default:
             return null;
         }
