@@ -3,6 +3,7 @@ import { MessageStream } from '@anthropic-ai/sdk/lib/MessageStream';
 import type { MessageParam, Messages, ToolResultBlockParam } from '@anthropic-ai/sdk/resources/messages';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { PendingToolUse } from './types';
+import { broadcast } from './wsServer';
 import { executeTool, toolDefinitions } from './utils/functionCalls';
 
 function encodeSseEvent(event: string, data: string): string {
@@ -73,6 +74,7 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
 
     try {
       console.log('[anthropicSse] create stream', { model, maxTokens, temperature, hasSystem: Boolean(system), messageCount: messages.length });
+
       const params: Messages.MessageStreamParams = {
         model,
         max_tokens: maxTokens,
@@ -201,6 +203,15 @@ async function dealWithToolUses(
         input: tu.input,
         output,
       })));
+      // also push via websocket for live tools panel
+      broadcast({
+        type: 'tool_result',
+        at: new Date().toISOString(),
+        tool_use_id: tu.id,
+        name: tu.name,
+        input: tu.input,
+        output,
+      });
     } catch (e) {
       console.error('[anthropicSse] write tool_result error', e);
     }

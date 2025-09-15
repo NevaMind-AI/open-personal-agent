@@ -17,13 +17,15 @@
     "@anthropic-ai/claude-code": "^1.0.110",
     "@anthropic-ai/sdk": "^0.61.0",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.1",
+    "@types/ws": "^8.18.1",
     "eslint": "^9.35.0",
     "globals": "^16.4.0",
     "ts-node-dev": "^2.0.0",

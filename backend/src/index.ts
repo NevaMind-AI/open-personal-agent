@@ -1,17 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { handleAgentStream } from './agentStream';
 import { handleAnthropicSse } from './anthropicSse';
+import type { Server } from 'http';
+import { createServer } from 'http';
+import { attachWs } from './wsServer';
 
 const app = express();
 app.use(cors());
 
 // Place streaming POST routes BEFORE body parsers to avoid consumed streams
-app.post('/api/agent/stream', (req, res) => {
-  console.log('[server] /api/agent/stream');
-   
-  handleAgentStream(req as any, res as any);
-});
 
 app.post('/api/anthropic/stream', (req, res) => {
   console.log('[server] /api/anthropic/stream');
@@ -28,6 +25,8 @@ app.get('/api/health', (_req, res) => {
 
 
 const PORT = process.env.PORT || 5174;
-app.listen(PORT, () => {
+const server: Server = createServer(app);
+attachWs(server);
+server.listen(PORT, () => {
   console.log(`Backend listening on http://localhost:${PORT}`);
 });
