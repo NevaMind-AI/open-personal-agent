@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { streamAnthropic } from '../../api/client';
 import { ChatInput } from './ChatInput.tsx';
 import { MessageList } from './MessageList.tsx';
-import { ToolsDrawer, ToolsPanel } from './ToolsPanel.tsx';
+import { ToolsDrawer, ToolsPanel } from '../tools/ToolsPanel.tsx';
 
 export function ChatPage() {
   const [messages, setMessages] = useState<MessageParam[]>([]);
