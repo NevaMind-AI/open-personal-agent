@@ -5,6 +5,9 @@ import { z } from "zod";
 import { findOne, insertOne } from "../../db/jsonDb";
 import { APPLICATION_RUNNING_TASKS_COLLECTION } from "../../db/models/application/consts";
 import { ApplicationTask } from "../../db/models/application/types";
+import { broadcast } from "../../ws/wsServer";
+import { WS_EVENT_APPLICATION_NEW_TASK } from "../../consts";
+import { handleAgentCode } from "../../claude-code/agentStream";
 
 export type CallClaudeCodeInput = {
     prompt: string;
@@ -71,6 +74,14 @@ export async function callClaudeCodeExec(input: CallClaudeCodeInput): Promise<Ca
         description,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+    });
+    
+    // 后台启动代码生成流程（不阻塞）
+    void handleAgentCode({ prompt });
+
+    broadcast({
+        type: WS_EVENT_APPLICATION_NEW_TASK,
+        at: new Date().toISOString(),
     });
     return { success: true };
 }

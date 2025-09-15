@@ -84,7 +84,11 @@ export function ChatPage() {
       if (Array.isArray(last.content)) {
         const lastBlock = last.content[last.content.length - 1];
         if (lastBlock.type === 'tool_use') {
-          lastBlock.input = JSON.parse(lastBlock.input as string);
+          try {
+            lastBlock.input = JSON.parse(lastBlock.input as string);
+          } catch {
+            lastBlock.input = JSON.parse("{}");
+          }
         }
       }
       return next;

@@ -40,7 +40,11 @@ export default function ToolsProvider(props: PropsWithChildren) {
     push('out', payload);
   }, [input, push]);
 
-  useEffect(() => () => { try { wsRef.current?.close(); } catch { /* ignore */ } }, []);
+  useEffect(() => {
+    // auto-connect on mount
+    connect();
+    return () => { try { wsRef.current?.close(); } catch { /* ignore */ } };
+  }, [connect]);
 
   const value: ToolsContextValue = useMemo(() => ({ connected, history, input, setInput, connect, disconnect, send }), [connected, history, input, connect, disconnect, send]);
 

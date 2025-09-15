@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import { handleAnthropicSse } from './anthropicSse';
+import { handleAnthropicSse } from './api/anthropicSse';
 import type { Server } from 'http';
 import { createServer } from 'http';
-import { attachWs } from './wsServer';
+import { attachWs } from './ws/wsServer';
+import applicationRouter from './api/application';
+import agentCodeRouter from './api/agentCode';
 
 const app = express();
 app.use(cors());
@@ -22,6 +24,9 @@ app.use(express.json());
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
+
+app.use('/api', applicationRouter);
+app.use('/api', agentCodeRouter);
 
 
 const PORT = process.env.PORT || 5174;

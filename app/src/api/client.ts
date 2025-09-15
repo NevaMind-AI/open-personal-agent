@@ -17,6 +17,23 @@ export async function getHealth(): Promise<HealthResponse> {
   return res.json();
 }
 
+// ----- application apis -----
+import type { Application, ApplicationTask } from '../components/types';
+
+export async function getRunningTask(): Promise<ApplicationTask | null> {
+  const res = await fetch(`${API_PREFIX}/application/running-task`, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  const json = await res.json();
+  return (json?.data ?? null) as ApplicationTask | null;
+}
+
+export async function getApplications(): Promise<Application[]> {
+  const res = await fetch(`${API_PREFIX}/applications`, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  const json = await res.json();
+  return (json?.data ?? []) as Application[];
+}
+
 export type StreamOptions = {
   model?: string
   max_tokens?: number
