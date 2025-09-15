@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import type { ContentBlockParam, MessageParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import { AssistantBubble } from './AssistantBubble.tsx';
 import { UserBubble } from './UserBubble.tsx';
-import { ToolResultBubble } from '../tools/ToolResultBubble.tsx';
+import { ToolResultBubble } from './ToolResultBubble.tsx';
 
 export const MessageList = forwardRef<HTMLDivElement, {
   messages: MessageParam[]
