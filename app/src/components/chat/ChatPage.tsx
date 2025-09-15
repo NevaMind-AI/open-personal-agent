@@ -4,6 +4,7 @@ import { streamAnthropic } from '../../api/client';
 import { ChatInput } from './ChatInput.tsx';
 import { MessageList } from './MessageList.tsx';
 import { ToolsDrawer, ToolsPanel } from '../tools/ToolsPanel.tsx';
+import ToolsProvider from '../tools/ToolsProvider.tsx';
 
 export function ChatPage() {
   const [messages, setMessages] = useState<MessageParam[]>([]);
@@ -121,6 +122,7 @@ export function ChatPage() {
   }, [messages, loading]);
 
   return (
+    <ToolsProvider>
     <div className="h-full flex flex-col bg-gradient-to-b from-slate-50 to-white text-slate-900">
       <header className="sticky top-0 backdrop-blur-md bg-white/75 border-b border-slate-200" style={{ zIndex: 'var(--z-header)' }}>
         <div className="max-w-none w-full mx-0 px-4 py-3 flex items-center gap-3 relative">
@@ -142,6 +144,7 @@ export function ChatPage() {
         <ToolsPanel />
       </div>
     </div>
+    </ToolsProvider>
   );
 }
 

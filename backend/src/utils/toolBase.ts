@@ -1,12 +1,9 @@
 // Tool definitions and executors for Anthropic tool_use
+import { tool } from "@anthropic-ai/claude-code";
+import { ToolUnion } from "@anthropic-ai/sdk/resources";
+import { z } from "zod";
 
-export type ToolDefinition = {
-  name: string
-  description?: string
-  input_schema: any
-}
-
-export const toolDefinitions: ToolDefinition[] = [
+export const toolDefinitions: ToolUnion[] = [
   {
     name: 'get_weather',
     description: 'Get current weather for a city.',
@@ -19,6 +16,29 @@ export const toolDefinitions: ToolDefinition[] = [
       required: ['location'],
     },
   },
+];
+
+export const codeToolDefinitions = [
+  tool(
+    'get_weather',
+    'Get current weather for a city.',
+    {
+      location: z.string().describe('City name, e.g. Beijing'),
+      unit: z.enum(['c', 'f']).describe('Temperature unit, c or f'),
+    },
+    async (input) => {
+      const location = String((input && input.location) || 'Unknown');
+      const unit = (input && (input.unit === 'f' ? 'f' : 'c')) as 'c' | 'f';
+      // mock data
+      const tempC = 22;
+      const tempF = Math.round((tempC * 9) / 5 + 32);
+      const temperature = unit === 'f' ? `${tempF}°F` : `${tempC}°C`;
+      return {
+        location,
+        temperature,
+      };
+    },
+  )
 ];
 
 export async function executeTool(name: string, input: any): Promise<unknown> {

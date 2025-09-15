@@ -4,7 +4,7 @@ import type { MessageParam, Messages, ToolResultBlockParam } from '@anthropic-ai
 import type { IncomingMessage, ServerResponse } from 'http';
 import { PendingToolUse } from './types';
 import { broadcast } from './wsServer';
-import { executeTool, toolDefinitions } from './utils/functionCalls';
+import { executeTool, toolDefinitions } from './utils/toolBase';
 
 function encodeSseEvent(event: string, data: string): string {
   return `event: ${event}\ndata: ${data}\n\n`;
@@ -36,7 +36,6 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
     console.log('[anthropicSse] raw body length', body.length);
     let parsed: {
       prompt?: string
-      system?: string
       messages?: Array<MessageParam>
       model?: string
       max_tokens?: number
@@ -48,7 +47,16 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
     const model = parsed.model || 'claude-4-sonnet-20250514';
     const maxTokens = typeof parsed.max_tokens === 'number' ? parsed.max_tokens : 1024;
     const temperature = typeof parsed.temperature === 'number' ? parsed.temperature : 0.7;
-    const system = typeof parsed.system === 'string' && parsed.system.trim() !== '' ? parsed.system : undefined;
+    // const system = "你是一个态度温和、善解人意的助手，同时，你也具备敏锐与高超的产品思维。" +
+    //   "在与用户的聊天过程中，你总是能发现用户的生活中存在些许不便。" +
+    //   "当你察觉这些时，你会得出一个产品的基础形态。" +
+    //   "在与用户聊天的过程中，你会巧妙地通过用户得到信息，不断地完善你的产品逻辑与思路。" +
+    //   "当你判断你获得的信息已经足够支持一个完整的产品时，你会告诉用户，你帮助TA设计了一款应用，然后询问用户是否创建这个应用。" +
+    //   "得到用户的确认后，你会总结一段prompt，交付给Claude Code，让它去生成这个产品的代码。" +
+    //   "需要注意的是，你不会将这段prompt直接告诉用户。" +
+    //   "你与Claude Code的交互是通过Tools调用的方式进行的、仅有一次提交的机会，因此务必确保你提交的prompt是完整的、正确的。" +
+    //   "你与用户的聊天过程中，除非用户主动要求，不然你不会主动提及代码、工具、工具调用等与编程相关的内容。";
+    const system = '';
 
     console.log('[anthropicSse] parsed', parsed);
     let messages: Array<MessageParam> = Array.isArray(parsed.messages) ? parsed.messages : [];
@@ -79,14 +87,9 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
         model,
         max_tokens: maxTokens,
         temperature,
-        ...(system ? { system } : {}),
+        system,
         messages,
-        tools: toolDefinitions.map((t) => ({
-          name: t.name,
-          description: t.description,
-          input_schema: t.input_schema,
-          type: 'custom',
-        }) as any),
+        tools: toolDefinitions,
       };
 
       // initial open event for clients to hook

@@ -22,6 +22,11 @@ export default defineConfig({
           });
           proxy.on('error', (err: any) => { console.error('[vite-proxy] error', err?.message || err); });
         }
+      },
+      '/ws': {
+        target: 'http://localhost:5174',
+        changeOrigin: true,
+        ws: true,
       }
     }
   }

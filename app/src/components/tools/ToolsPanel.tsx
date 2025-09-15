@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { ToolsContainer } from './ToolsContainer';
 
 export function ToolsPanel() {
   return (
     <div className="w-80 shrink-0 border border-slate-200 rounded-xl bg-white my-4 mr-4 p-4 overflow-y-auto shadow-sm hidden md:block">
-      <div className="text-sm font-semibold mb-3">Tools</div>
-      <div className="text-xs text-slate-500">Customize this panel with your tools…</div>
+      <ToolsContainer />
     </div>
   );
 }
@@ -31,11 +31,10 @@ export function ToolsDrawer() {
             style={{ zIndex: 'var(--z-drawer)' }}
             onTransitionEnd={() => { if (!open) setVisible(false); }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm font-semibold">Tools</div>
+            <div className="flex items-center justify-end mb-3">
               <button className="text-slate-500" onClick={() => setOpen(false)}>Close</button>
             </div>
-            <div className="text-xs text-slate-500">Customize this panel with your tools…</div>
+            <ToolsContainer />
           </div>
         </div>
       )}

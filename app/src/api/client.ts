@@ -19,7 +19,6 @@ export async function getHealth(): Promise<HealthResponse> {
 
 export type StreamOptions = {
   model?: string
-  system?: string
   max_tokens?: number
   temperature?: number
 }

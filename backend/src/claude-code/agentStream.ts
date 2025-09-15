@@ -1,8 +1,8 @@
-import { join } from 'path';
-import { existsSync } from 'fs';
-import { Options, query } from '@anthropic-ai/claude-code';
-import type { MessageParam as APIUserMessage } from '@anthropic-ai/sdk/resources';
 import type { SDKUserMessage } from '@anthropic-ai/claude-code';
+import { createSdkMcpServer, Options, query } from '@anthropic-ai/claude-code';
+import type { MessageParam as APIUserMessage } from '@anthropic-ai/sdk/resources';
+import { join } from 'path';
+import { codeToolDefinitions } from '../utils/toolBase';
 
 export type AgentStreamParams = {
   prompt?: string;
@@ -10,31 +10,37 @@ export type AgentStreamParams = {
   history?: { text: string }[];
 };
 
+const mcpServers = createSdkMcpServer({
+  name: 'local_tools',
+  version: '1.0.0',
+  tools: codeToolDefinitions,
+});
+
 function buildOptions(base: AgentStreamParams): Options {
   const { session } = base;
-  const userDataCwd = join(process.cwd(), 'user_data');
+  const userDataCwd = join(process.cwd(), 'workspace');
   const claudeExecutable = process.env.CLAUDE_CODE_EXECUTABLE ?? join(
     process.cwd(),
     'node_modules',
     '.bin',
     process.platform === 'win32' ? 'claude.cmd' : 'claude'
   );
-  const mcpScript = join(process.cwd(), 'scripts', 'mcp', 'set-active-tab-server.mjs');
 
   const options: Options = {
     maxTurns: 100,
-    appendSystemPrompt: '你是一名专业的开发者，请根据用户的需求生成代码。代码为React+TypScript+Vite结构，使用Element-plus UI库，代码写法符合React开发规范。当用户需要你构建一个工具/应用时，你需要引导用户告诉你他的准确诉求。当你判断用户的描述足够支撑你开发一个功能完备的应用时，你应该主动询问用户是否开始创建项目。得到用户的同意后，你将在你的工作目录下的default_user目录生成一个新文件夹，作为该项目的工作目录，名称由你根据用户的需求生成。创建完毕之后，你应该在这个目录下生成一个README.md文件，描述这个项目的功能和使用方法。然后，根据用户的需求，在这个目录下生成完整的一套代码。生成完毕之后，调用npm run build，生成dist目录。',
+    appendSystemPrompt:
+      '你是一名专业的前端开发者，会根据用户的需求生产、修改代码。' +
+      '当你新建项目时：技术栈为React+TypScript+Vite结构，使用Element-plus UI库，代码写法符合React开发规范，适配移动端。' +
+      '当你新建项目时：你只会获得一次输入，因此在获得这次输入之后，你需要完全理解输入prompt的含义，并且开始生成代码。' +
+      '当你新建项目时：你需要先获取当前正在运行的任务（通过工具get_has_running_task），从正在运行的任务信息获取projectName，然后使用projectName作为名称，在总工作目录下生成一个新文件夹，作为该项目的工作目录。' +
+      '当你新建项目时：创建完工作路径之后，你应该在这个目录下生成一个README.md文件，描述这个项目的功能和使用方法。' +
+      '然后，根据用户的需求，在这个目录下生成完整的一套代码。它必须能够正常运行，无lint错误，并且符合用户的需求。' +
+      '生成完毕之后，调用npm run build，生成dist目录。',
     cwd: userDataCwd,
     allowedTools: ['*'],
-    ...(existsSync(mcpScript) ? {
-      mcpServers: {
-        ui: {
-          type: 'stdio',
-          command: 'node',
-          args: [mcpScript],
-        },
-      },
-    } : {}),
+    mcpServers: {
+      'local_tools': mcpServers,
+    },
     pathToClaudeCodeExecutable: claudeExecutable,
     continue: true,
     ...(session ? { resume: session } : {}),
@@ -45,7 +51,11 @@ function buildOptions(base: AgentStreamParams): Options {
   return options;
 }
 
-async function* buildPrompt(history: { text: string }[], finalText: string, sessionId: string): AsyncGenerator<SDKUserMessage, void> {
+async function* buildPrompt(
+  history: { text: string }[],
+  finalText: string,
+  sessionId: string
+): AsyncGenerator<SDKUserMessage, void> {
   for (const h of history) {
     if (!h || typeof h.text !== 'string' || h.text.trim() === '') continue;
     const msg: SDKUserMessage = {
