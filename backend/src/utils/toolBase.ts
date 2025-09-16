@@ -1,19 +1,13 @@
 // Tool definitions and executors for Anthropic tool_use
 import { ToolUnion } from "@anthropic-ai/sdk/resources";
-import { callClaudeCodeDefine, callClaudeCodeExec, CallClaudeCodeInput, callClaudeCodeTool } from "./tools/callClaudeCode";
-import { getHasRunningTaskDefine, getHasRunningTaskExec, getHasRunningTaskTool } from "./tools/getHasRunningTask";
-import { saveApplicationDefine, saveApplicationExec, saveApplicationTool } from "./tools/saveApplication";
+import { callClaudeCodeDefine, callClaudeCodeExec, CallClaudeCodeInput } from "./tools/callClaudeCode";
+import { getHasRunningTaskDefine, getHasRunningTaskExec } from "./tools/getHasRunningTask";
+import { saveApplicationDefine, saveApplicationExec } from "./tools/saveApplication";
 
 export const toolDefinitions: ToolUnion[] = [
   callClaudeCodeDefine,
   // saveApplicationDefine,
   getHasRunningTaskDefine
-];
-
-export const codeToolDefinitions = [
-  callClaudeCodeTool,
-  saveApplicationTool,
-  getHasRunningTaskTool
 ];
 
 export async function executeTool(name: string, input: any): Promise<unknown> {

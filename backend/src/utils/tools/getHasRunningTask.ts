@@ -1,4 +1,3 @@
-import { tool } from "@anthropic-ai/claude-code";
 import { ToolUnion } from "@anthropic-ai/sdk/resources";
 import { findOne } from "../../db/jsonDb";
 import { APPLICATION_RUNNING_TASKS_COLLECTION } from "../../db/models/application/consts";
@@ -18,15 +17,6 @@ export const getHasRunningTaskDefine: ToolUnion = {
     properties: {},
   },
 };
-
-export const getHasRunningTaskTool = tool(
-  getHasRunningTaskDefine.name,
-  getHasRunningTaskDefine.description ?? '',
-  {},
-  async () => {
-    return getHasRunningTaskExec();
-  }
-);
 
 export async function getHasRunningTaskExec(): Promise<GetHasRunningTaskOutput> {
   const running = await findOne<ApplicationTask>(APPLICATION_RUNNING_TASKS_COLLECTION, { status: "running" });

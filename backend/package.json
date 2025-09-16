@@ -16,6 +16,7 @@
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.110",
     "@anthropic-ai/sdk": "^0.61.0",
+    "@modelcontextprotocol/sdk": "^1.10.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "lokijs": "^1.5.12",

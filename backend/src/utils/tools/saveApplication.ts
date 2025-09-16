@@ -1,4 +1,3 @@
-import { tool } from "@anthropic-ai/claude-code";
 import { ToolUnion } from "@anthropic-ai/sdk/resources";
 import { WS_EVENT_APPLICATION_REFRESH } from "../../consts";
 import { deleteOne, findOne, insertOne, updateOne } from "../../db/jsonDb";
@@ -18,15 +17,6 @@ export const saveApplicationDefine: ToolUnion = {
     properties: {},
   },
 };
-
-export const saveApplicationTool = tool(
-  saveApplicationDefine.name,
-  saveApplicationDefine.description ?? '',
-  {},
-  async () => {
-    return saveApplicationExec();
-  }
-);
 
 export const saveApplicationExec = async (): Promise<SaveApplicationOutput> => {
   const running = await findOne<ApplicationTask>(APPLICATION_RUNNING_TASKS_COLLECTION, { status: "running" });

@@ -1,14 +1,8 @@
 import type { SDKUserMessage } from '@anthropic-ai/claude-code';
-import { createSdkMcpServer, Options, query } from '@anthropic-ai/claude-code';
+import { Options, query } from '@anthropic-ai/claude-code';
 import type { MessageParam as APIUserMessage } from '@anthropic-ai/sdk/resources';
+import { existsSync } from 'fs';
 import { join } from 'path';
-import { codeToolDefinitions } from '../utils/toolBase';
-
-const mcpServers = createSdkMcpServer({
-  name: 'local_tools',
-  version: '1.0.0',
-  tools: codeToolDefinitions,
-});
 
 export async function handleAgentCode(input: { prompt?: string; session?: string; history?: { text: string }[] }) {
   try {
@@ -25,6 +19,8 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
       process.platform === 'win32' ? 'claude.cmd' : 'claude'
     );
 
+    const mcpScript = join(process.cwd(), 'scripts', 'mcp', 'local-tools-server.mjs');
+
     const options: Options = {
       maxTurns: 100,
       appendSystemPrompt: '你是一名专业的前端开发者，会根据用户的需求生产、修改代码。' +
@@ -33,12 +29,18 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
         '当你新建项目时：你需要先获取当前正在运行的任务（通过工具get_has_running_task），从正在运行的任务信息获取projectName，然后使用projectName作为名称，在总工作目录下生成一个新文件夹，作为该项目的工作目录。' +
         '当你新建项目时：创建完工作路径之后，你应该在这个目录下生成一个README.md文件，描述这个项目的功能和使用方法。' +
         '然后，根据用户的需求，在这个目录下生成完整的一套代码。它必须能够正常运行，无lint错误，并且符合用户的需求。' +
-        '生成完毕之后，调用npm run build，生成dist目录。',
+        '生成完毕之后，调用npm run build，生成dist目录，然后调用save_application工具保存Application信息。',
       cwd: userDataCwd,
       allowedTools: ['*'],
-      mcpServers: {
-        'local_tools': mcpServers,
-      },
+      ...(existsSync(mcpScript) ? {
+        mcpServers: {
+          local_tools: {
+            type: 'stdio',
+            command: 'node',
+            args: [mcpScript],
+          },
+        },
+      } : {}),
       pathToClaudeCodeExecutable: claudeExecutable,
       continue: true,
       ...(session ? {
@@ -46,7 +48,6 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
       } : {}),
       model: 'claude-4-sonnet-20250514',
       permissionMode: 'bypassPermissions',
-      env: { ...process.env, CLAUDE_CODE_EXECUTABLE: '' },
       stderr: (s) => console.error('[claude-code]', s),
     };
 

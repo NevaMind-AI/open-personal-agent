@@ -1,13 +1,11 @@
-import { tool } from "@anthropic-ai/claude-code";
 import { ToolUnion } from "@anthropic-ai/sdk/resources";
 import { randomUUID } from "crypto";
-import { z } from "zod";
+import { handleAgentCode } from "../../claude-code/agentStream";
+import { WS_EVENT_APPLICATION_NEW_TASK } from "../../consts";
 import { findOne, insertOne } from "../../db/jsonDb";
 import { APPLICATION_RUNNING_TASKS_COLLECTION } from "../../db/models/application/consts";
 import { ApplicationTask } from "../../db/models/application/types";
 import { broadcast } from "../../ws/wsServer";
-import { WS_EVENT_APPLICATION_NEW_TASK } from "../../consts";
-import { handleAgentCode } from "../../claude-code/agentStream";
 
 export type CallClaudeCodeInput = {
     prompt: string;
@@ -45,19 +43,6 @@ export const callClaudeCodeDefine: ToolUnion = {
         },
     },
 };
-
-export const callClaudeCodeTool = tool(
-    callClaudeCodeDefine.name,
-    callClaudeCodeDefine.description ?? '',
-    {
-        prompt: z.string().describe('清晰描述能解决用户痛点的、与Claude Code交互后可生成代码的prompt'),
-        projectName: z.string().describe('合适的项目名称，用于在用户工作目录下生成一个新文件夹，作为该项目的工作目录'),
-        description: z.string().describe('项目的描述，简洁一些，字数不超过50字。'),
-    },
-    async (input) => {
-        return callClaudeCodeExec(input as CallClaudeCodeInput);
-    }
-);
 
 export async function callClaudeCodeExec(input: CallClaudeCodeInput): Promise<CallClaudeCodeOutput> {
     const { prompt, projectName, description } = input;
