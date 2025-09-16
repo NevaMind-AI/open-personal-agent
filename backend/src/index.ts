@@ -4,6 +4,7 @@ import { handleAnthropicSse } from './api/anthropicSse';
 import type { Server } from 'http';
 import { createServer } from 'http';
 import { attachWs } from './ws/wsServer';
+import { join } from 'path';
 import applicationRouter from './api/application';
 import agentCodeRouter from './api/agentCode';
 
@@ -27,6 +28,9 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api', applicationRouter);
 app.use('/api', agentCodeRouter);
+
+// static serve workspace outputs
+app.use('/workspace', express.static(join(process.cwd(), 'workspace')));
 
 
 const PORT = process.env.PORT || 5174;
