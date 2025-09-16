@@ -28,6 +28,11 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
       }
+      ,
+      '/workspace': {
+        target: 'http://localhost:5174',
+        changeOrigin: true,
+      }
     }
   }
 });

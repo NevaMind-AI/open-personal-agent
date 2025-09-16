@@ -3,12 +3,15 @@ import { useTools } from './toolsCtx';
 import { getApplications, getRunningTask } from '../../api/client';
 import type { Application, ApplicationTask } from '../types';
 import { WS_EVENT_APPLICATION_NEW_TASK, WS_EVENT_APPLICATION_REFRESH } from '../consts';
+import ApplicationModal from '../application/ApplicationModal';
 
 export function ToolsContainer() {
   const { connected, history, connect, disconnect } = useTools();
   const [running, setRunning] = useState<ApplicationTask | null>(null);
   const [apps, setApps] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeProject, setActiveProject] = useState<string | null>(null);
 
   const refreshToken = useMemo(() => {
     if (!history.length) return '';
@@ -74,13 +77,16 @@ export function ToolsContainer() {
             <LoadingSkeleton count={3} />
           ) : apps.length > 0 ? (
             apps.map((a) => (
-              <AppItem key={a.id} title={a.projectName} desc={a.description} />
+              <button key={a.id} onClick={() => { setActiveProject(a.projectName); setModalOpen(true); }} className="text-left w-full group">
+                <AppItem title={a.projectName} desc={a.description} />
+              </button>
             ))
           ) : (
             <EmptyState />
           )}
         </div>
       </section>
+      <ApplicationModal open={modalOpen} projectName={activeProject} onClose={() => setModalOpen(false)} />
     </div>
   );
 }
@@ -89,13 +95,13 @@ function AppItem(props: { title: string; desc: string }) {
   const { title, desc } = props;
   const initials = (title || '?').trim().charAt(0).toUpperCase();
   return (
-    <div className="flex items-center gap-3 p-2 rounded-lg border border-slate-200">
-      <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-semibold">
+    <div className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 transition hover:border-slate-300 hover:bg-slate-50 group-hover:border-slate-300 group-hover:bg-slate-50">
+      <div className="h-10 w-10 rounded-xl bg-slate-100 flex shrink-0 items-center justify-center text-slate-700 font-semibold transition group-hover:bg-slate-200">
         {initials}
       </div>
       <div className="min-w-0">
-        <div className="text-sm font-medium truncate">{title}</div>
-        <div className="text-xs text-slate-500 truncate">{desc}</div>
+        <div className="text-sm font-medium truncate transition group-hover:text-slate-900">{title}</div>
+        <div className="text-xs text-slate-500 truncate transition group-hover:text-slate-600">{desc}</div>
       </div>
     </div>
   );
