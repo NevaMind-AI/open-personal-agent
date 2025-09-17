@@ -4,6 +4,20 @@ html, body, #root {
   padding: 0;
 }
 
+/* Global modern font stack */
+body {
+  font-family: 'Raleway', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* slow spin utility for conic gradients */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

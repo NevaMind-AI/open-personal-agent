@@ -16,10 +16,10 @@ export function ChatInput(props: {
   }, [disabled, input, onSend]);
 
   return (
-    <div className="sticky bottom-0 bg-gradient-to-b from-transparent to-white">
+    <div className="sticky bottom-0">
       <div className="w-full mx-0 flex gap-2">
         <textarea
-          className="flex-1 border border-slate-200 rounded-xl px-3 py-2 resize-none min-h-11 max-h-52 outline-none"
+          className="flex-1 border border-slate-200 bg-white rounded-xl px-3 py-2 resize-none min-h-11 max-h-52 outline-none"
           value={input}
           placeholder="Send a message"
           onChange={(e) => setInput(e.target.value)}

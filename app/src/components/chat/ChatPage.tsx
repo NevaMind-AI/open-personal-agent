@@ -127,16 +127,21 @@ export function ChatPage() {
 
   return (
     <ToolsProvider>
-    <div className="h-full flex flex-col bg-gradient-to-b from-slate-50 to-white text-slate-900">
-      <header className="sticky top-0 backdrop-blur-md bg-white/75 border-b border-slate-200" style={{ zIndex: 'var(--z-header)' }}>
-        <div className="max-w-none w-full mx-0 px-4 py-3 flex items-center gap-3 relative">
-          <div className="text-base font-semibold">Open Macaron</div>
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-sky-50 to-violet-50 text-slate-900">
+      <header className="sticky top-0 backdrop-blur-md bg-white/60 border-b border-white/20" style={{ zIndex: 'var(--z-header)' }}>
+        <div className="max-w-none w-full mx-0 px-6 py-3 flex items-center gap-3 relative">
+          <div className="text-2xl font-extrabold tracking-tight">
+            <span className="inline-block">
+              <span className="bg-gradient-to-r from-pink-400 via-sky-400 to-fuchsia-300 bg-clip-text text-transparent">Open Macaron</span>
+              <span className="block h-[2px] mt-[-8px] -mr-2 rounded-full bg-gradient-to-r from-slate-800 to-slate-700"></span>
+            </span>
+          </div>
           <ToolsDrawer />
         </div>
       </header>
 
       <div className="flex-1 min-h-0 flex">
-        <main className="w-full max-w-none m-0 p-4 flex flex-col gap-3 flex-1 min-h-0">
+        <main className="w-full max-w-none m-0 p-6 flex flex-col gap-4 flex-1 min-h-0">
           <MessageList ref={listRef} messages={messages} loading={loading} />
 
           <ChatInput

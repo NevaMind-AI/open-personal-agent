@@ -4,6 +4,7 @@ import { getApplications, getRunningTask } from '../../api/client';
 import type { Application, ApplicationTask } from '../types';
 import { WS_EVENT_APPLICATION_NEW_TASK, WS_EVENT_APPLICATION_REFRESH } from '../consts';
 import ApplicationModal from '../application/ApplicationModal';
+import AppItem from './AppItem';
 
 export function ToolsContainer() {
   const { connected, history, connect, disconnect } = useTools();
@@ -91,21 +92,7 @@ export function ToolsContainer() {
   );
 }
 
-function AppItem(props: { title: string; desc: string }) {
-  const { title, desc } = props;
-  const initials = (title || '?').trim().charAt(0).toUpperCase();
-  return (
-    <div className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 transition hover:border-slate-300 hover:bg-slate-50 group-hover:border-slate-300 group-hover:bg-slate-50">
-      <div className="h-10 w-10 rounded-xl bg-slate-100 flex shrink-0 items-center justify-center text-slate-700 font-semibold transition group-hover:bg-slate-200">
-        {initials}
-      </div>
-      <div className="min-w-0">
-        <div className="text-sm font-medium truncate transition group-hover:text-slate-900">{title}</div>
-        <div className="text-xs text-slate-500 truncate transition group-hover:text-slate-600">{desc}</div>
-      </div>
-    </div>
-  );
-}
+// AppItem moved to ./AppItem.tsx
 
 function LoadingSkeleton(props: { count?: number }) {
   const { count = 3 } = props;

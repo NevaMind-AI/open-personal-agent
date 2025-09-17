@@ -21,7 +21,13 @@ export function ToolResultBubble(props: { content: Array<ContentBlockParam> }) {
       {content.map((item, idx) => {
         switch (item.type) {
           case 'tool_result':
-            return renderToolResultBlock(item as ToolResultBlockParam, idx);
+            return (
+              <div key={idx} className="p-[1.5px] rounded-2xl bg-gradient-to-tr from-amber-200 via-rose-200 to-fuchsia-200">
+                <div className="rounded-2xl px-4 py-3 bg-white/60 backdrop-blur-xl border border-white/50">
+                  {renderToolResultBlock(item as ToolResultBlockParam, idx)}
+                </div>
+              </div>
+            );
           default:
             return null;
         }

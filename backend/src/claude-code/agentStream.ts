@@ -29,7 +29,8 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
         '当你新建项目时：你需要先获取当前正在运行的任务（通过工具get_has_running_task），从正在运行的任务信息获取projectName，然后使用projectName作为名称，在总工作目录下生成一个新文件夹，作为该项目的工作目录。' +
         '当你新建项目时：创建完工作路径之后，你应该在这个目录下生成一个README.md文件，描述这个项目的功能和使用方法。' +
         '然后，根据用户的需求，在这个目录下生成完整的一套代码。它必须能够正常运行，无lint错误，并且符合用户的需求。' +
-        '生成完毕之后，调用npm run build，生成dist目录，然后调用save_application工具保存Application信息。',
+        '生成完毕之后，如果你用的是React，那么调用npm run build，生成dist目录。需要注意：创建/修改完毕之后，不要让网页自行打开。' +
+        '[最重要的一点：在新建/修改完毕之后，调用save_application工具，保存Application信息。]',
       cwd: userDataCwd,
       allowedTools: ['*'],
       ...(existsSync(mcpScript) ? {
