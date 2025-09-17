@@ -9,7 +9,7 @@ function encodeSseEvent(event: string, data: string): string {
   return `event: ${event}\ndata: ${data}\n\n`;
 }
 
-const ANTHROPIC_SSE_LOG_ENABLED = false;
+const ANTHROPIC_SSE_LOG_ENABLED = true;
 
 function sseLog(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.log(...args); }
 function sseDebug(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.debug(...args); }
