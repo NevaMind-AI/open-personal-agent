@@ -16,6 +16,34 @@ export async function getHealth(): Promise<HealthResponse> {
   }
   return res.json();
 }
+// ----- session apis -----
+export async function getSession(sessionId: string): Promise<{ messages: unknown[] }> {
+  const res = await fetch(`${API_PREFIX}/session/${encodeURIComponent(sessionId)}`, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
+export async function saveSession(sessionId: string, messages: unknown[]): Promise<{ ok: boolean }> {
+  const res = await fetch(`${API_PREFIX}/session/${encodeURIComponent(sessionId)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages }),
+  });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
+export async function listSessions(): Promise<{ sessions: { id: string; mtime: string; size: number }[] }> {
+  const res = await fetch(`${API_PREFIX}/sessions`, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
+export async function deleteSession(sessionId: string): Promise<{ ok: boolean }> {
+  const res = await fetch(`${API_PREFIX}/session/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
 
 // ----- application apis -----
 import type { Application, ApplicationTask } from '../components/types';

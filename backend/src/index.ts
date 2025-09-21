@@ -7,6 +7,7 @@ import { attachWs } from './ws/wsServer';
 import { join } from 'path';
 import applicationRouter from './api/application';
 import agentCodeRouter from './api/agentCode';
+import sessionRouter from './api/session';
 
 const app = express();
 app.use(cors());
@@ -28,6 +29,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api', applicationRouter);
 app.use('/api', agentCodeRouter);
+app.use('/api', sessionRouter);
 
 // static serve workspace outputs
 app.use('/workspace', express.static(join(process.cwd(), 'workspace')));

@@ -4,8 +4,9 @@ export function ChatInput(props: {
   disabled?: boolean
   onSend: (text: string) => void
   onNewChat: () => void
+  onShowHistory?: (anchor: DOMRect) => void
 }) {
-  const { disabled, onSend, onNewChat } = props;
+  const { disabled, onSend, onNewChat, onShowHistory } = props;
   const [input, setInput] = useState('');
 
   const handleSend = useCallback(() => {
@@ -34,7 +35,18 @@ export function ChatInput(props: {
       </div>
       <div className="flex items-center justify-between mt-1 text-xs text-slate-500">
         <div>Enter to send • Shift+Enter for new line</div>
-        <button className="text-sky-500" onClick={onNewChat}>New chat</button>
+        <div className="flex items-center gap-3">
+          <button
+            className="text-slate-600 hover:text-slate-800"
+            onClick={(e) => {
+              const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+              onShowHistory?.(rect);
+            }}
+          >
+            History
+          </button>
+          <button className="text-sky-500" onClick={onNewChat}>New chat</button>
+        </div>
       </div>
     </div>
   );

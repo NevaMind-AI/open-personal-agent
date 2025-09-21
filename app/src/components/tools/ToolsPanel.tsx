@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ToolsContainer } from './ToolsContainer';
+import ApiKeyLogo from '../header/ApiKeyLogo.tsx';
 
 export function ToolsPanel() {
   return (
@@ -51,7 +52,8 @@ export function ToolsDrawer() {
             <div className="relative p-[2px] rounded-xl overflow-hidden h-full">
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500%] h-[500%] rounded-full bg-[conic-gradient(at_50%_50%,#a78bfa_0deg,#22d3ee_120deg,#f472b6_240deg,#a78bfa_360deg)] animate-spin-slow opacity-70" />
               <div className="relative rounded-[11px] border border-white/40 bg-white/80 backdrop-blur p-4 h-full">
-                <div className="flex items-center justify-end mb-3">
+                <div className="flex items-center justify-between mb-3">
+                  <ApiKeyLogo align="left" />
                   <button
                     className="text-slate-600 hover:text-slate-800 rounded-full p-2 bg-white/20 backdrop-blur hover:bg-slate-100 transition-colors duration-300"
                     onClick={() => setOpen(false)}
