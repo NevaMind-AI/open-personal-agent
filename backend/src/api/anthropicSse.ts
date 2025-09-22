@@ -9,7 +9,7 @@ function encodeSseEvent(event: string, data: string): string {
   return `event: ${event}\ndata: ${data}\n\n`;
 }
 
-const ANTHROPIC_SSE_LOG_ENABLED = false;
+const ANTHROPIC_SSE_LOG_ENABLED = true;
 
 function sseLog(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.log(...args); }
 function sseDebug(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.debug(...args); }
@@ -40,6 +40,7 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
     sseLog('[anthropicSse] raw body length', body.length);
     let parsed: {
       prompt?: string
+      system?: string
       messages?: Array<MessageParam>
       model?: string
       max_tokens?: number
@@ -51,6 +52,7 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
     const model = parsed.model || 'claude-4-sonnet-20250514';
     const maxTokens = typeof parsed.max_tokens === 'number' ? parsed.max_tokens : 1024;
     const temperature = typeof parsed.temperature === 'number' ? parsed.temperature : 0.7;
+    const parsedSystem = typeof parsed.system === 'string' ? parsed.system : '';
     const system = "你是一个态度温和、善解人意的助手，同时，你也具备敏锐与高超的产品思维。" +
       "在与用户的聊天过程中，你总是能发现用户的生活中存在些许不便。" +
       "当你察觉这些时，你会得出一个产品的基础形态。" +
@@ -60,7 +62,8 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
       "得到用户的确认后，你会总结一段prompt，交付给Claude Code，让它去生成这个产品的代码。" +
       "需要注意的是，你不会将这段prompt直接告诉用户。" +
       "你与Claude Code的交互是通过Tools调用的方式进行的、仅有一次提交的机会，因此务必确保你提交的prompt是完整的、正确的。" +
-      "你与用户的聊天过程中，除非用户主动要求，不然你不会主动提及代码、工具、工具调用等与编程相关的内容。";
+      "你与用户的聊天过程中，除非用户主动要求，不然你不会主动提及代码、工具、工具调用等与编程相关的内容。" + 
+      "\n\n" + parsedSystem;
     // const system = '';
 
     sseLog('[anthropicSse] parsed', parsed);

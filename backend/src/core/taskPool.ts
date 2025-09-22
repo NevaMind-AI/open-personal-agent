@@ -51,6 +51,15 @@ export class TaskPool {
     this.sessionToTask.set(sessionId, task);
     return task;
   }
+
+  cancelBySession(sessionId: string): boolean {
+    const t = this.sessionToTask.get(sessionId);
+    if (!t) return false;
+    try { t.abort.abort(); } catch { /* ignore */ }
+    this.sessionToTask.delete(sessionId);
+    this.keyToTask.delete(t.key);
+    return true;
+  }
 }
 
 export const taskPool = new TaskPool();

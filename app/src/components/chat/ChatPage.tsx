@@ -212,10 +212,19 @@ export function ChatPage() {
               setMessages([]);
               const key = 'chat_session_id';
               const id = (crypto as any).randomUUID ? (crypto as any).randomUUID() : String(Date.now());
+              const prev = localStorage.getItem(key) || '';
               localStorage.setItem(key, id);
               setSessionId(id);
               // immediately persist empty session
               void (async () => { try { await saveSession(id, []); } catch { /* ignore */ } })();
+              // ws notify session switch
+              try {
+                const apiKey = localStorage.getItem('memu_api_key') || '';
+                const evt = new CustomEvent('api_key_update', { detail: {} }); // ensure provider inited
+                window.dispatchEvent(evt);
+                // provider listens only api_key_update; send explicit session_switch via ws if needed
+                (window as any).__wsSend?.({ type: 'session_switch', prevSessionId: prev, nextSessionId: id, apiKey });
+              } catch { /* ignore */ }
             }}
             onShowHistory={showHistory}
           />

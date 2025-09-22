@@ -71,6 +71,12 @@ export default function ToolsProvider(props: PropsWithChildren) {
 
   const value: ToolsContextValue = useMemo(() => ({ connected, history, input, setInput, connect, disconnect, send }), [connected, history, input, connect, disconnect, send]);
 
+  // expose a helper for session switch notify
+  (window as any).__wsSend = (msg: unknown) => {
+    const ws = wsRef.current; if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+    try { ws.send(JSON.stringify(msg)); return true; } catch { return false; }
+  };
+
   return <ToolsCtx.Provider value={value}>{children}</ToolsCtx.Provider>;
 }
 

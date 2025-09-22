@@ -34,6 +34,16 @@ export function attachWs(server: HttpServer) {
           ws.send(JSON.stringify({ type: 'api_key_update_ack', at: new Date().toISOString(), accepted: Boolean(task) }));
           return;
         }
+        if (payload?.type === 'session_switch') {
+          const prevSessionId = String(payload.prevSessionId || '').trim();
+          const nextSessionId = String(payload.nextSessionId || '').trim();
+          const apiKey = String(payload.apiKey || '');
+          if (prevSessionId) taskPool.cancelBySession(prevSessionId);
+          const task = taskPool.upsert(nextSessionId, apiKey);
+          if (task) startOrContinuePolling(task.sessionId, task.apiKey, task.abort);
+          ws.send(JSON.stringify({ type: 'session_switch_ack', at: new Date().toISOString(), accepted: Boolean(task) }));
+          return;
+        }
         ws.send(JSON.stringify({ type: 'ack', at: new Date().toISOString(), payload }));
       } catch (e) {
         ws.send(JSON.stringify({ type: 'error', message: (e as Error).message }));

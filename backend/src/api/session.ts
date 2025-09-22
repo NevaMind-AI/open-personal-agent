@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, statSync, unlinkSync } from 'fs';
 import { join } from 'path';
+import { MEMORY_RETRIEVE_COLLECTION } from '../db/models/memory/consts';
+import { findOne } from '../db/jsonDb';
 
 const router = Router();
 const rootDir = join(process.cwd(), 'sessions');
@@ -70,6 +72,18 @@ router.delete('/session/:id', (req, res) => {
     const file = join(rootDir, `${id}.json`);
     if (existsSync(file)) unlinkSync(file);
     res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: (e as Error).message });
+  }
+});
+
+// GET /api/memory/retrieve/:sessionId
+router.get('/memory/retrieve/:sessionId', async (req, res) => {
+  try {
+    const sessionId = String(req.params.sessionId || '').trim();
+    if (!sessionId) return res.status(400).json({ error: 'sessionId required' });
+    const data = await findOne(MEMORY_RETRIEVE_COLLECTION, { sessionId });
+    res.json({ data: data ?? null });
   } catch (e) {
     res.status(500).json({ error: (e as Error).message });
   }

@@ -45,6 +45,13 @@ export async function deleteSession(sessionId: string): Promise<{ ok: boolean }>
   return res.json();
 }
 
+// memory retrieve by sessionId
+export async function getMemoryRetrieve(sessionId: string): Promise<{ data: { nowRetrieve?: { summaryRange?: [number, number]; summary?: string } } | null }> {
+  const res = await fetch(`${API_PREFIX}/memory/retrieve/${encodeURIComponent(sessionId)}`, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
 // ----- application apis -----
 import type { Application, ApplicationTask } from '../components/types';
 
@@ -79,10 +86,30 @@ export async function streamAnthropic(
 ): Promise<void> {
   const controller = new AbortController();
   console.log('[streamAnthropic] start', { messages, hasPrompt: Boolean(prompt), options });
+
+  // fetch memory retrieve for current session if available
+  let finalMessages = messages;
+  let system: string | undefined = undefined;
+  try {
+    const sid = localStorage.getItem('chat_session_id') || '';
+    if (sid) {
+      const mr = await getMemoryRetrieve(sid);
+      const now = mr?.data?.nowRetrieve;
+      if (now) {
+        const cutoff = Array.isArray(now.summaryRange) ? now.summaryRange[1] : undefined;
+        if (Array.isArray(finalMessages) && typeof cutoff === 'number' && cutoff > 0 && cutoff < finalMessages.length) {
+          finalMessages = finalMessages.slice(cutoff);
+        }
+        if (typeof now.summary === 'string' && now.summary.trim() !== '') {
+          system = now.summary;
+        }
+      }
+    }
+  } catch { /* ignore */ }
   const res = await fetch(`${API_PREFIX}/anthropic/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
-    body: JSON.stringify({ messages, prompt, ...options }),
+    body: JSON.stringify({ messages: finalMessages, prompt, system, ...options }),
     signal: controller.signal,
   });
   if (!res.ok || !res.body) {
