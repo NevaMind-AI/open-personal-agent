@@ -1,17 +1,40 @@
 {
-  "name": "backend",
+  "name": "open-personal-agent-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend server for Open Personal Agent AI application with Anthropic Claude integration",
+  "main": "dist/index.js",
+  "keywords": [
+    "ai",
+    "chat",
+    "anthropic",
+    "claude",
+    "express",
+    "typescript",
+    "websocket",
+    "backend",
+    "api"
+  ],
+  "homepage": "https://github.com/yourusername/open-personal-agent#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/open-personal-agent.git",
+    "directory": "backend"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/open-personal-agent/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Your Name <your.email@example.com>",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.110",

@@ -1,8 +1,30 @@
 {
-  "name": "app",
-  "private": true,
-  "version": "0.0.0",
+  "name": "open-personal-agent-frontend",
+  "private": false,
+  "version": "1.0.0",
+  "description": "Modern AI-powered personal agent application frontend built with React and powered by Anthropic Claude",
   "type": "module",
+  "keywords": [
+    "ai",
+    "chat",
+    "anthropic",
+    "claude",
+    "react",
+    "typescript",
+    "vite",
+    "frontend"
+  ],
+  "homepage": "https://github.com/yourusername/open-personal-agent#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/open-personal-agent.git",
+    "directory": "app"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/open-personal-agent/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Your Name <your.email@example.com>",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

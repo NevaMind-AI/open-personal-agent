@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: app/package-lock.json
+
+    - name: Install frontend dependencies
+      working-directory: ./app
+      run: npm ci
+
+    - name: Run frontend linter
+      working-directory: ./app
+      run: npm run lint
+
+    - name: Build frontend
+      working-directory: ./app
+      run: npm run build
+
+    # Uncomment when tests are available
+    # - name: Run frontend tests
+    #   working-directory: ./app
+    #   run: npm test
+
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Install backend dependencies
+      working-directory: ./backend
+      run: npm ci
+
+    - name: Run backend linter
+      working-directory: ./backend
+      run: npm run lint
+
+    - name: Build backend
+      working-directory: ./backend
+      run: npm run build
+
+    # Uncomment when tests are available
+    # - name: Run backend tests
+    #   working-directory: ./backend
+    #   run: npm test
+
+  security-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Run security audit (frontend)
+      working-directory: ./app
+      run: npm audit --audit-level=moderate
+
+    - name: Run security audit (backend)
+      working-directory: ./backend
+      run: npm audit --audit-level=moderate

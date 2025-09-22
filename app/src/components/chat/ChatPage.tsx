@@ -188,7 +188,7 @@ export function ChatPage() {
         <div className="max-w-none w-full mx-0 px-6 py-3 flex items-center gap-3 relative">
           <div className="text-2xl font-extrabold tracking-tight">
             <span className="inline-block">
-              <span className="bg-gradient-to-r from-pink-400 via-sky-400 to-fuchsia-300 bg-clip-text text-transparent">Open Macaron</span>
+              <span className="bg-gradient-to-r from-pink-400 via-sky-400 to-fuchsia-300 bg-clip-text text-transparent">Open Personal Agent</span>
               <span className="block h-[2px] mt-[-8px] -mr-2 rounded-full bg-gradient-to-r from-slate-800 to-slate-700"></span>
             </span>
           </div>

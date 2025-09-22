@@ -1,0 +1,29 @@
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+# Global owners for the repository
+* @maintainer-username
+
+# Frontend specific files
+/app/ @frontend-maintainer
+
+# Backend specific files  
+/backend/ @backend-maintainer
+
+# Documentation
+*.md @docs-maintainer
+/docs/ @docs-maintainer
+
+# Configuration files
+/.github/ @maintainer-username
+package*.json @maintainer-username
+*.config.js @maintainer-username
+*.config.ts @maintainer-username
+
+# Security related files
+SECURITY.md @security-team
+/.github/workflows/ @devops-team
+
+# License and legal
+LICENSE @legal-team
+CONTRIBUTING.md @community-team

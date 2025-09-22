@@ -1,0 +1,57 @@
+{
+  "name": "open-personal-agent",
+  "version": "1.0.0",
+  "description": "A modern AI-powered personal agent application built with React and powered by Anthropic Claude",
+  "private": true,
+  "workspaces": [
+    "app",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:frontend": "cd app && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd app && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "cd backend && npm start",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd app && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "install:all": "npm install && cd app && npm install && cd ../backend && npm install",
+    "clean": "rm -rf node_modules app/node_modules backend/node_modules app/dist backend/dist"
+  },
+  "keywords": [
+    "ai",
+    "chat",
+    "anthropic",
+    "claude",
+    "react",
+    "typescript",
+    "express",
+    "websocket",
+    "frontend",
+    "backend",
+    "full-stack"
+  ],
+  "homepage": "https://github.com/yourusername/open-personal-agent#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/open-personal-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/open-personal-agent/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Your Name <your.email@example.com>",
+  "contributors": [
+    "Your Name <your.email@example.com>"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
