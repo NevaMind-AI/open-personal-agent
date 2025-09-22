@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { ToolsCtx, type ToolsContextValue, type WsMsg } from './toolsCtx.ts';
+import { LS_MEMU_API_KEY } from '../consts.ts';
 
 export default function ToolsProvider(props: PropsWithChildren) {
   const { children } = props;
@@ -18,7 +19,14 @@ export default function ToolsProvider(props: PropsWithChildren) {
     if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) return;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
-    ws.onopen = () => { setConnected(true); };
+    ws.onopen = () => {
+      setConnected(true);
+      try {
+        const sessionId = localStorage.getItem('chat_session_id') || '';
+        const apiKey = localStorage.getItem(LS_MEMU_API_KEY) || '';
+        ws.send(JSON.stringify({ type: 'handshake', sessionId, apiKey }));
+      } catch { /* ignore */ }
+    };
     ws.onmessage = (ev) => {
       try { push('in', JSON.parse(ev.data as string)); } catch { push('in', String(ev.data)); }
     };
@@ -45,6 +53,21 @@ export default function ToolsProvider(props: PropsWithChildren) {
     connect();
     return () => { try { wsRef.current?.close(); } catch { /* ignore */ } };
   }, [connect]);
+
+  // listen api key updates from UI
+  useEffect(() => {
+    const onKeyUpdate = (e: Event) => {
+      const detail = (e as CustomEvent).detail || {};
+      const apiKey = typeof detail.apiKey === 'string' ? detail.apiKey : (localStorage.getItem(LS_MEMU_API_KEY) || '');
+      const sessionId = localStorage.getItem('chat_session_id') || '';
+      const ws = wsRef.current;
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        try { ws.send(JSON.stringify({ type: 'api_key_update', sessionId, apiKey })); } catch { /* ignore */ }
+      }
+    };
+    window.addEventListener('api_key_update', onKeyUpdate as EventListener);
+    return () => window.removeEventListener('api_key_update', onKeyUpdate as EventListener);
+  }, []);
 
   const value: ToolsContextValue = useMemo(() => ({ connected, history, input, setInput, connect, disconnect, send }), [connected, history, input, connect, disconnect, send]);
 

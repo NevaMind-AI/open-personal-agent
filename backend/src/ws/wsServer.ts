@@ -1,5 +1,7 @@
 import type { Server as HttpServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
+import { taskPool } from '../core/taskPool';
+import { startOrContinuePolling } from '../services/summaryPoller';
 
 let wssRef: WebSocketServer | null = null;
 
@@ -13,8 +15,25 @@ export function attachWs(server: HttpServer) {
     ws.on('message', (data, isBinary) => {
       // echo basic message back with timestamp; payload is expected JSON
       try {
+        console.log('message', data);
         const text = isBinary ? data.toString() : String(data);
         const payload = JSON.parse(text);
+        if (payload?.type === 'handshake') {
+          const sessionId = String(payload.sessionId || '').trim();
+          const apiKey = String(payload.apiKey || '');
+          const task = taskPool.upsert(sessionId, apiKey);
+          if (task) startOrContinuePolling(task.sessionId, task.apiKey, task.abort);
+          ws.send(JSON.stringify({ type: 'handshake_ack', at: new Date().toISOString(), accepted: Boolean(task) }));
+          return;
+        }
+        if (payload?.type === 'api_key_update') {
+          const sessionId = String(payload.sessionId || '').trim();
+          const apiKey = String(payload.apiKey || '');
+          const task = taskPool.upsert(sessionId, apiKey);
+          if (task) startOrContinuePolling(task.sessionId, task.apiKey, task.abort);
+          ws.send(JSON.stringify({ type: 'api_key_update_ack', at: new Date().toISOString(), accepted: Boolean(task) }));
+          return;
+        }
         ws.send(JSON.stringify({ type: 'ack', at: new Date().toISOString(), payload }));
       } catch (e) {
         ws.send(JSON.stringify({ type: 'error', message: (e as Error).message }));

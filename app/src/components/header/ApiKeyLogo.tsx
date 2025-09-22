@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { LS_MEMU_API_KEY } from '../consts';
 
-const LS_KEY = 'anthropic_api_key';
+const LS_KEY = LS_MEMU_API_KEY;
 
 export default function ApiKeyLogo(props: { align?: 'left' | 'right' }) {
   const { align = 'right' } = props;
@@ -60,7 +61,14 @@ export default function ApiKeyLogo(props: { align?: 'left' | 'right' }) {
                 className="w-full border border-slate-200 rounded-md pl-2 pr-8 py-1 text-sm bg-white"
                 placeholder="Enter your API key"
                 value={value}
-                onChange={(e) => { setValue(e.target.value); try { localStorage.setItem(LS_KEY, e.target.value.trim()); } catch { /* ignore */ } }}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setValue(v);
+                  try { localStorage.setItem(LS_KEY, v.trim()); } catch { /* ignore */ }
+                  // notify ws provider
+                  const evt = new CustomEvent('api_key_update', { detail: { apiKey: v.trim() } });
+                  window.dispatchEvent(evt);
+                }}
               />
               <button
                 type="button"

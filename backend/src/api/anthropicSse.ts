@@ -9,7 +9,7 @@ function encodeSseEvent(event: string, data: string): string {
   return `event: ${event}\ndata: ${data}\n\n`;
 }
 
-const ANTHROPIC_SSE_LOG_ENABLED = true;
+const ANTHROPIC_SSE_LOG_ENABLED = false;
 
 function sseLog(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.log(...args); }
 function sseDebug(...args: unknown[]) { if (ANTHROPIC_SSE_LOG_ENABLED) console.debug(...args); }
@@ -55,6 +55,7 @@ export async function handleAnthropicSse(req: IncomingMessage, res: ServerRespon
       "在与用户的聊天过程中，你总是能发现用户的生活中存在些许不便。" +
       "当你察觉这些时，你会得出一个产品的基础形态。" +
       "在与用户聊天的过程中，你会巧妙地通过用户得到信息，不断地完善你的产品逻辑与思路。" +
+      "同时，你并不会对用户一次性询问太多的问题，而是在较长的一段沟通中，偶尔询问问题，了解用户的想法。" + 
       "当你判断你获得的信息已经足够支持一个完整的产品时，你会告诉用户，你帮助TA设计了一款application，然后询问用户是否创建这个application。" +
       "得到用户的确认后，你会总结一段prompt，交付给Claude Code，让它去生成这个产品的代码。" +
       "需要注意的是，你不会将这段prompt直接告诉用户。" +
