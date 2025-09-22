@@ -32,7 +32,7 @@ export const MessageList = forwardRef<HTMLDivElement, {
   return (
     <div ref={ref} className="flex-1 min-h-0 border border-white/20 rounded-xl bg-white/40 backdrop-blur-xl p-6 overflow-y-auto shadow-[0_1px_30px_-10px_rgba(15,23,42,0.25)]">
       {messages.length === 0 ? (
-        <div className="text-slate-400">Start chatting with Macaron...</div>
+        <div className="text-slate-400">Start chatting ...</div>
       ) : (
         messages.map((m, idx) => (
           <div key={idx} className="flex my-4">
