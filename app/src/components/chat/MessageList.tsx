@@ -32,7 +32,7 @@ export const MessageList = forwardRef<HTMLDivElement, {
   return (
     <div ref={ref} className="flex-1 min-h-0 border border-white/20 rounded-xl bg-white/40 backdrop-blur-xl p-6 overflow-y-auto shadow-[0_1px_30px_-10px_rgba(15,23,42,0.25)]">
       {messages.length === 0 ? (
-        <div className="text-slate-400">Start chatting with Macaron…</div>
+        <div className="text-slate-400">Start chatting with Macaron...</div>
       ) : (
         messages.map((m, idx) => (
           <div key={idx} className="flex my-4">
@@ -53,7 +53,7 @@ export const MessageList = forwardRef<HTMLDivElement, {
         <div className="flex my-2">
           <div className="w-full">
             <div className="inline-flex items-center gap-2 px-2 py-1">
-              <span className="sr-only">Generating…</span>
+              <span className="sr-only">Generating...</span>
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />

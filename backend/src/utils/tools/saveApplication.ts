@@ -11,7 +11,7 @@ type SaveApplicationOutput = {
 
 export const saveApplicationDefine: ToolUnion = {
   name: 'save_application',
-  description: 'Application创建成功或修改成功后，保存Application信息。无需输入值。返回值为是否保存成功。',
+  description: 'After an Application is created or updated, save the Application information. No input required. Returns whether saving succeeded.',
   input_schema: {
     type: 'object',
     properties: {},

@@ -35,6 +35,8 @@
 - Node.js (v18 or higher)
 - npm or yarn
 - Anthropic API key
+- Claude Code (for local code tasks) - see [Claude Code Quickstart](https://docs.claude.com/zh-CN/docs/claude-code/quickstart)
+- Memory API key (optional) - visit [memu.so to get an API key](https://app.memu.so/api-key)
 
 ### 1. Clone the repository
 

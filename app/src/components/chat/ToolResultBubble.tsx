@@ -9,7 +9,7 @@ export function ToolResultBubble(props: { content: Array<ContentBlockParam> }) {
     try {
       content = JSON.parse(block.content as string);
     } catch {
-      // 未完成时容错，直接渲染原始字符串
+      // Be tolerant when incomplete; render the raw string directly
     }
     const resultTitle = `tool: ${content ? content.name : 'result'}`;
     const resultContent = content ? `result: ${prettyMaybeJson(content.output)}` : String(block.content);

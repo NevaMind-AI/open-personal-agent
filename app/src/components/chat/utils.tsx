@@ -14,6 +14,6 @@ export function prettyMaybeJson(raw: unknown): string {
     try {
         return JSON.stringify(JSON.parse(raw), null, 2);
     } catch {
-        return raw; // 流式未完成时直接显示原文，避免抛错
+      return raw; // When streaming is incomplete, show the original text to avoid errors
     }
 }

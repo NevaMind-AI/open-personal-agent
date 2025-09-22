@@ -5,7 +5,7 @@ import { ApplicationTask } from '../db/models/application/types';
 
 const router = Router();
 
-// 获取当前 running 的 task 信息
+// Get the current running task info
 router.get('/application/running-task', async (_req, res) => {
     try {
         const running = await findOne<ApplicationTask>(APPLICATION_RUNNING_TASKS_COLLECTION, { status: 'running' });
@@ -15,7 +15,7 @@ router.get('/application/running-task', async (_req, res) => {
     }
 });
 
-// 获取当前所有 Application
+// Get all Applications
 router.get('/applications', async (_req, res) => {
     try {
         const apps = await findMany<Application>(APPLICATIONS_COLLECTION, {});

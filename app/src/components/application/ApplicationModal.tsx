@@ -11,13 +11,13 @@ export default function ApplicationModal(props: ApplicationModalProps) {
   const { open, projectName, onClose } = props;
 
   const [render, setRender] = useState(open);
-  // 初始为 false，确保首次打开也有入场动画
+  // Initially false to ensure the first open still has an entrance animation
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (open) {
       setRender(true);
-      // double rAF 确保浏览器先绘制初始状态，再切换到目标状态触发动画
+      // double rAF to ensure the browser paints the initial state before switching to the target state to trigger the animation
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setShow(true));
       });

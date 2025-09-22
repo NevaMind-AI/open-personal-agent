@@ -20,25 +20,25 @@ type CallClaudeCodeOutput = {
 
 export const callClaudeCodeDefine: ToolUnion = {
     name: 'call_claude_code',
-    description: '调用Claude Code以生成代码。' +
-        '传入清晰描述能解决用户痛点的、与Claude Code单次交流即后可生成代码的prompt；' +
-        '以及一个合适的项目名称，用于在用户工作目录下生成一个新文件夹，作为该项目的工作目录；' +
-        '以及一个项目的描述，简洁一些，字数不超过50字。' +
-        '返回值为代码生成任务是否创建成功。如果创建失败会返回原因。',
+    description: 'Call Claude Code to generate code.' +
+        " Provide a prompt that clearly describes a solution to the user's pain point that Claude Code can use to generate code in a single interaction;" +
+        " and a suitable project name to create a new folder under the user's workspace as the project working directory;" +
+        ' and a brief project description (no more than 50 characters). ' +
+        ' The return value indicates whether the code generation task was created successfully; if creation fails, the reason is returned.',
     input_schema: {
         type: 'object',
         properties: {
             prompt: {
                 type: 'string',
-                description: '清晰描述能解决用户痛点的、与Claude Code交互后可生成代码的prompt'
+                description: 'A clear prompt that Claude Code can use to generate code in one interaction'
             },
             projectName: {
                 type: 'string',
-                description: '合适的项目名称，用于在用户工作目录下生成一个新文件夹，作为该项目的工作目录'
+                description: "A suitable project name to create a new folder under the user's workspace as the project working directory"
             },
             description: {
                 type: 'string',
-                description: '项目的描述，简洁一些，字数不超过50字。'
+                description: 'A brief project description (<= 50 characters)'
             },
         },
     },
@@ -46,7 +46,7 @@ export const callClaudeCodeDefine: ToolUnion = {
 
 export async function callClaudeCodeExec(input: CallClaudeCodeInput): Promise<CallClaudeCodeOutput> {
     const { prompt, projectName, description } = input;
-    // 单例任务门禁：若存在 running 任务则拒绝；否则登记并返回成功
+    // Singleton task guard: reject if a running task exists; otherwise, register and return success
     const running = await findOne(APPLICATION_RUNNING_TASKS_COLLECTION, { status: "running" });
     if (running) {
         return { success: false, reason: "There is already a running task. Please wait for it to finish." };
@@ -61,7 +61,7 @@ export async function callClaudeCodeExec(input: CallClaudeCodeInput): Promise<Ca
         updatedAt: new Date().toISOString(),
     });
     
-    // 后台启动代码生成流程（不阻塞）
+    // Start the code generation process in the background (non-blocking)
     void handleAgentCode({ prompt });
 
     broadcast({
