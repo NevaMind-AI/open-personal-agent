@@ -37,7 +37,7 @@
   },
   "type": "commonjs",
   "dependencies": {
-    "@anthropic-ai/claude-code": "^1.0.110",
+    "@anthropic-ai/claude-code": "^1.0.120",
     "@anthropic-ai/sdk": "^0.61.0",
     "@modelcontextprotocol/sdk": "^1.10.2",
     "cors": "^2.8.5",
