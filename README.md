@@ -108,8 +108,8 @@ Navigate to `http://localhost:5173` (frontend) to start using Open Personal Agen
   
 ## Contributing
 
-We build trust through open-source collaboration. Your creative contributions drive Open Personal Agent's innovation forward. Explore our GitHub issues and projects to get started and make your mark on the future of memU.
-📋 Read our detailed Contributing Guide →
+We build trust through open-source collaboration. Your creative contributions drive Open Personal Agent's innovation forward. Explore our GitHub issues and projects to get started and make your mark on the future of Open Personal Agent.
+
 
 ## 🌍 Community
 For more information please contact info@nevamind.ai
