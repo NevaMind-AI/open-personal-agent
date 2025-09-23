@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  A modern AI-powered personal agent application built with React and powered by Anthropic Claude
+  Open Personal Agent：The Open-Source Framework for Personal Agents
 </p>
 
 <p align="center">
@@ -17,17 +17,23 @@
   <a href="#contributing">Contributing</a>
 </p>
 
-## Features
+Open Personal Agent is an open-source framework that lets you **create personal mini-apps (agents)** by simply describing your needs. LLMs do the work behind the scenes, and your apps can **remember past interactions**.
 
-- 🤖 **AI Chat Interface**: Seamless chat experience powered by Anthropic Claude
-- 🛠️ **Code Generation**: Integrated Claude Code for automated development tasks
-- 📱 **Responsive Design**: Beautiful, modern UI that works on desktop and mobile
-- 💾 **Session Management**: Persistent chat sessions with history
-- 🔌 **WebSocket Support**: Real-time communication between frontend and backend
-- 📁 **Application Management**: Create and manage AI-generated applications
-- 🎨 **Modern UI**: Built with React, TypeScript, and Tailwind CSS
+Traditional apps and plugins are built for generic use cases, but real-world needs are highly diverse. Building one app per need is impractical.
+With Open Personal Agent, you simply describe what you want → get a custom agent generated automatically →**use, improve, and share it**.
 
-## Quick Start
+## Advantages 📈
+
+- 🎯 **Full Customization** — Not a fixed app. Say your need, and the system generates a mini-app/agent tailored to you.
+- ♾️ **Endless Possibilities** — From tools and assistants to entertainment or automation, create as many agents as you need.
+- 🤖 **LLM-Driven** — Powered by large models that understand requirements, generate logic, and run your agents.
+- 🔓 **Open & Extensible** — Fork, read, modify, deploy, or extend with your own features and plugins.
+- 🧠 **Memory Support** — Agents can recall user context and provide not only utility but also ongoing personal companionship.
+
+## Star Us on GitHub ⭐
+Star Open Personal Agent to get notified about new releases and join our growing community of developers creating custom AI-powered mini-apps.
+
+## Quick Start 🚀
 
 ### Prerequisites
 
@@ -80,9 +86,33 @@ npm run dev
 Navigate to `http://localhost:5173` (frontend) to start using Open Personal Agent.
 
 
+## Key Features 💪
+- 🤖 **AI Chat Interface**: Seamless chat experience powered by Anthropic Claude
+- 🛠️ **Code Generation**: Integrated Claude Code for automated development tasks
+- 📱 **Responsive Design**: Beautiful, modern UI that works on desktop and mobile
+- 💾 **Session Management**: Persistent chat sessions with history
+- 🔌 **WebSocket Support**: Real-time communication between frontend and backend
+- 📁 **Application Management**: Create and manage AI-generated applications
+- 🎨 **Modern UI**: Built with React, TypeScript, and Tailwind CSS
+
+## Use Cases⛰️
+- ⏰ Productivity Tools: e.g. auto-organize emails, filter noise, set reminders
+- ✍️ Content Creation Assistant: draft outlines, edit text, generate summaries
+- ⚡ Automation Scripts: extract website content, generate reports, send messages
+- 📚 Learning Companion: organize notes, generate quizzes, simulate exams, practice languages
+- 🎮 Fun & Extensions: chatbots, file organizers, art generation, music recommendations
+  
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We build trust through open-source collaboration. Your creative contributions drive Open Personal Agent's innovation forward. Explore our GitHub issues and projects to get started and make your mark on the future of memU.
+📋 Read our detailed Contributing Guide →
+
+## 🌍 Community
+For more information please contact info@nevamind.ai
+- GitHub Issues: Report bugs, request features, and track development. [Submit an issue](https://github.com/yourusername/open-personal-agent/issues)
+- Discord: Get real-time support, chat with the community, and stay updated. Join us
+- X (Twitter): Follow for updates, AI insights, and key announcements. [Follow us](https://x.com/memU_ai)
+- WeChat：Access the latest information and participate in community discussions.
 
 ### Development Workflow
 
@@ -103,7 +133,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This repository is licensed under the Open Personal Agent Open Source License, based on Apache 2.0 with additional conditions.
 
 ## Acknowledgments
 
