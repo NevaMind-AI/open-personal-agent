@@ -2,21 +2,21 @@ Open Source License
 
 Open Personal Agent  is licensed under a modified version of the Apache License 2.0, with the following additional conditions:
 
-Open Personal Agent may be utilized commercially, including as a backend service for other applications or as an application development platform for enterprises. Should the conditions below be met, a commercial license must be obtained from the producer:
+1. Open Personal Agent may be utilized commercially, including as a backend service for other applications or as an application development platform for enterprises. Should the conditions below be met, a commercial license must be obtained from the producer:
 
-Multi-tenant service: Unless explicitly authorized by  Open Personal Agent in writing, you may not use the  Open Personal Agent source code to operate a multi-tenant environment.
+a. Multi-tenant service: Unless explicitly authorized by  Open Personal Agent in writing, you may not use the  Open Personal Agent source code to operate a multi-tenant environment.
 
-Tenant Definition: Within the context of Open Personal Agent, one tenant corresponds to one workspace. The workspace provides a separate area for each tenant's data and configurations.
+  -Tenant Definition: Within the context of Open Personal Agent, one tenant corresponds to one workspace. The workspace provides a separate area for each tenant's data and configurations.
 
-LOGO and copyright information: In the process of using  Open Personal Agent's frontend, you may not remove or mo Open Personal Agent the LOGO or copyright information in the  Open Personal Agent console or applications. This restriction is inapplicable to uses of  Open Personal Agent that do not involve its frontend.
+b. LOGO and copyright information: In the process of using  Open Personal Agent's frontend, you may not remove or mo Open Personal Agent the LOGO or copyright information in the  Open Personal Agent console or applications. This restriction is inapplicable to uses of  Open Personal Agent that do not involve its frontend.
 
-Frontend Definition: For the purposes of this license, the "frontend" of  Open Personal Agent includes all components located in the web/directory when running Open Personal Agent from the raw source code, or the "web" image when running Open Personal Agent with Docker.
+  -Frontend Definition: For the purposes of this license, the "frontend" of  Open Personal Agent includes all components located in the web/directory when running Open Personal Agent from the raw source code, or the "web" image when running Open Personal Agent with Docker.
 
-As a contributor, you should agree that:
+2. As a contributor, you should agree that:
 
-The producer can adjust the open-source agreement to be more strict or relaxed as deemed necessary.
+a. The producer can adjust the open-source agreement to be more strict or relaxed as deemed necessary.
 
-Your contributed code may be used for commercial purposes, including but not limited to its cloud business operations.
+b. Your contributed code may be used for commercial purposes, including but not limited to its cloud business operations.
 
 Apart from the specific conditions mentioned above, all other rights and restrictions follow Apache License 2.0. Detailed information about the Apache License 2.0 can be found at http://www.apache.org/licenses/LICENSE-2.0.
 
