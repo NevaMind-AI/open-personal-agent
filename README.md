@@ -30,6 +30,10 @@ With Open Personal Agent, you simply describe what you want → get a custom age
 - 🔓 **Open & Extensible** — Fork, read, modify, deploy, or extend with your own features and plugins.
 - 🧠 **Memory Support** — Agents can recall user context and provide not only utility but also ongoing personal companionship.
 
+
+https://github.com/user-attachments/assets/c175c18f-63ed-45d9-bb09-cc1bca1e1305
+
+
 ## Star Us on GitHub ⭐
 Star Open Personal Agent to get notified about new releases and join our growing community of developers creating custom AI-powered mini-apps.
 
@@ -110,9 +114,11 @@ We build trust through open-source collaboration. Your creative contributions dr
 ## 🌍 Community
 For more information please contact info@nevamind.ai
 - GitHub Issues: Report bugs, request features, and track development. [Submit an issue](https://github.com/yourusername/open-personal-agent/issues)
-- Discord: Get real-time support, chat with the community, and stay updated. Join us
+- Discord: Get real-time support, chat with the community, and stay updated. [Join us](https://discord.com/invite/memu)
 - X (Twitter): Follow for updates, AI insights, and key announcements. [Follow us](https://x.com/memU_ai)
 - WeChat：Access the latest information and participate in community discussions.
+<img width="1280" height="548" alt="image" src="https://github.com/user-attachments/assets/155affe2-1737-4762-9090-b0353c0aaaba" />
+
 
 ### Development Workflow
 
@@ -133,7 +139,7 @@ For more information please contact info@nevamind.ai
 
 ## License
 
-This repository is licensed under the Open Personal Agent Open Source License, based on Apache 2.0 with additional conditions.
+This repository is licensed under the [Open Personal Agent Open Source License](https://github.com/NevaMind-AI/open-personal-agent/tree/main?tab=License-1-ov-file), based on Apache 2.0 with additional conditions.
 
 ## Acknowledgments
 
@@ -141,14 +147,6 @@ This repository is licensed under the Open Personal Agent Open Source License, b
 - [Vite](https://vitejs.dev/) for the excellent build tool
 - [React](https://reactjs.org/) for the UI framework
 - [Tailwind CSS](https://tailwindcss.com/) for styling utilities
-
-## Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](https://github.com/yourusername/open-personal-agent/issues) page
-2. Create a new issue if your problem isn't already reported
-3. Join our community discussions
 
 ---
 
