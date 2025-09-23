@@ -12,7 +12,7 @@ export function ToolsContainer() {
   const [apps, setApps] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [activeProject, setActiveProject] = useState<{ id: string; name: string } | null>(null);
 
   const refreshToken = useMemo(() => {
     if (!history.length) return '';
@@ -78,7 +78,7 @@ export function ToolsContainer() {
             <LoadingSkeleton count={3} />
           ) : apps.length > 0 ? (
             apps.map((a) => (
-              <button key={a.id} onClick={() => { setActiveProject(a.projectName); setModalOpen(true); }} className="text-left w-full group">
+              <button key={a.id} onClick={() => { setActiveProject({ id: a.id, name: a.projectName }); setModalOpen(true); }} className="text-left w-full group">
                 <AppItem title={a.projectName} desc={a.description} />
               </button>
             ))
@@ -87,7 +87,7 @@ export function ToolsContainer() {
           )}
         </div>
       </section>
-      <ApplicationModal open={modalOpen} projectName={activeProject} onClose={() => setModalOpen(false)} />
+      <ApplicationModal open={modalOpen} projectId={activeProject?.id} projectName={activeProject?.name} onClose={() => setModalOpen(false)} />
     </div>
   );
 }

@@ -35,7 +35,7 @@ async function main() {
       }
       return {
         content: [
-          { type: 'text', text: JSON.stringify(res.json()) }
+          { type: 'text', text: await res.text() }
         ]
       };
     }
@@ -58,7 +58,7 @@ async function main() {
       }
       return {
         content: [
-          { type: 'text', text: JSON.stringify(res.json()) }
+          { type: 'text', text: await res.text() }
         ]
       };
     }
@@ -80,7 +80,7 @@ async function main() {
         const text = await res.text();
         throw new Error(`dispatch failed: ${res.status} ${text}`);
       }
-      return { content: [{ type: 'text', text: JSON.stringify(res.json()) }] };
+      return { content: [{ type: 'text', text: await res.text() }] };
     }
   );
 

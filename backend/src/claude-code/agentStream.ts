@@ -3,6 +3,7 @@ import { Options, query } from '@anthropic-ai/claude-code';
 import type { MessageParam as APIUserMessage } from '@anthropic-ai/sdk/resources';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import util from 'node:util';
 
 export async function handleAgentCode(input: { prompt?: string; session?: string; history?: { text: string }[] }) {
   try {
@@ -23,14 +24,20 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
 
     const options: Options = {
       maxTurns: 100,
-      appendSystemPrompt: 'You are a professional frontend developer who produces and modifies code according to user needs.' +
-        ' When creating a new project: use React + TypeScript + Vite, with the Element-plus UI library; follow React best practices and support mobile.' +
-        ' When creating a new project: you will receive only a single input. After receiving it, fully understand the prompt and begin generating code.' +
-        ' When creating a new project: first obtain the currently running task via the **get_has_running_task tool**, retrieve the {projectName} from it, then create a new folder under the workspace root named after {projectName} as the project working directory.' +
-        ' When creating a new project: after creating the working directory, generate a README.md in this directory that describes the project functionality and usage.' +
-        " Then, based on the user's needs, generate a complete set of code in this directory. It must run correctly, have no lint errors, and meet the user's requirements." +
-        ' After finishing, if using React, run npm run build to generate the dist directory. Note: after creating/modifying, do not auto-open any web pages.' +
-        ' [Most important: after creating/modifying, call the save_application tool to save the Application information.]',
+      appendSystemPrompt: `
+You are a professional frontend developer who produces and modifies code based on user requirements.
+
+When creating a new project, strictly follow these steps:
+
+1. Use the React + TypeScript + Vite stack with the Element Plus UI library. Follow React best practices and ensure mobile responsiveness.
+2. You will receive only a single input. After receiving it, fully understand the prompt and start generating code.
+3. At the start of every task, your very first step must be: create a folder under your workspace root to serve as the working directory for the new project.
+4. Name this folder according to the following rule: call the get_has_running_task tool to retrieve information, then use the returned {task.id} as the folder name.
+5. After creating the working path, create a README.md in this directory that describes the project's functionality and usage.
+6. Then, based on the user's requirements, generate a complete set of code in this directory. It must run correctly, have no lint errors, and meet the user's needs.
+7. After finishing, if you are using React, run npm run build to produce the dist directory. Note: after creation/modification, do not allow any web page to open automatically.
+8. Most importantly: after creating/modifying, call the save_application tool to save the Application information.
+      `,
       cwd: userDataCwd,
       allowedTools: ['*'],
       ...(existsSync(mcpScript) ? {
@@ -43,7 +50,7 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
         },
       } : {}),
       pathToClaudeCodeExecutable: claudeExecutable,
-      continue: true,
+      continue: false,
       ...(session ? {
         resume: session,
       } : {}),
@@ -79,7 +86,7 @@ export async function handleAgentCode(input: { prompt?: string; session?: string
       console.log('[handleAgentCode] input', input, options);
       for await (const event of query({ prompt: input, options })) {
         try {
-          console.log('[handleAgentCode] event', event);
+          console.log(util.inspect(event, { depth: null, colors: true, maxArrayLength: null, breakLength: 120 }));
         } catch (err) {
           console.error('[handleAgentCode] error', err);
           // ignore write error

@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 
 type ApplicationModalProps = {
   open: boolean;
-  projectName: string | null;
+  projectId: string | undefined;
+  projectName: string | undefined;
   onClose: () => void;
 };
 
 export default function ApplicationModal(props: ApplicationModalProps) {
-  const { open, projectName, onClose } = props;
+  const { open, projectId, projectName, onClose } = props;
 
   const [render, setRender] = useState(open);
   // Initially false to ensure the first open still has an entrance animation
@@ -28,10 +29,10 @@ export default function ApplicationModal(props: ApplicationModalProps) {
     }
   }, [open]);
 
-  if (!render || !projectName) return null;
+  if (!render || !projectId) return null;
 
   // Build target url relative to current location
-  const src = `/workspace/${projectName}/index.html`;
+  const src = `/workspace/${projectId}/index.html`;
 
   const content = (
     <div className="fixed inset-0" style={{ zIndex: 1000 }}>

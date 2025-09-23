@@ -21,25 +21,30 @@ router.post('/agent-code/test', async (req, res) => {
 
 router.post('/agent-code/mcp-proxy', async (req, res) => {
   try {
+    console.log('[agent-code/mcp-proxy] req.body', req.body);
     const { type, data } = req.body;
     switch (type) {
       case callClaudeCodeDefine.name: {
         const result = await callClaudeCodeExec(data as CallClaudeCodeInput);
         res.status(200).json(result);
+        console.log('[agent-code/mcp-proxy] callClaudeCodeExec result', result);
         break;
       }
       case saveApplicationDefine.name: {
         const result = await saveApplicationExec();
         res.status(200).json(result);
+        console.log('[agent-code/mcp-proxy] saveApplicationExec result', result);
         break;
       }
       case getHasRunningTaskDefine.name: {
         const result = await getHasRunningTaskExec();
         res.status(200).json(result);
+        console.log('[agent-code/mcp-proxy] getHasRunningTaskExec result', result);
         break;
       }
     }
   } catch (e) {
+    console.error('[agent-code/mcp-proxy] error', e);
     res.status(500).json({ error: (e as Error).message });
   }
 });
