@@ -137,9 +137,6 @@ For more information please contact info@nevamind.ai
 - Run `npm run lint` to check code style
 - Ensure all tests pass
 
-## License
-
-This repository is licensed under the [Open Personal Agent Open Source License](https://github.com/NevaMind-AI/open-personal-agent/tree/main?tab=License-1-ov-file), based on Apache 2.0 with additional conditions.
 
 ## Acknowledgments
 
