@@ -53,7 +53,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/lokijs": "^1.5.14",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.8.1",
     "@types/ws": "^8.18.1",
     "eslint": "^9.35.0",
     "globals": "^16.4.0",
